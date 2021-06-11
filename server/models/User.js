@@ -2,16 +2,11 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const Blog = require('./Blog')
 const tokenSecret = require('../config/keys').tokenSecret
 const Schema = mongoose.Schema
 
 const userSchema = new Schema(
 	{
-		handle: {
-			type: String,
-			required: true,
-		},
 		avatar: {
 			type: String,
 		},
@@ -42,22 +37,6 @@ const userSchema = new Schema(
 				}
 			},
 		},
-		followers: [
-			{
-				userId: {
-					type: Schema.Types.ObjectId,
-					required: true,
-				},
-			},
-		],
-		following: [
-			{
-				userId: {
-					type: Schema.Types.ObjectId,
-					required: true,
-				},
-			},
-		],
 		caption: {
 			type: String,
 		},
@@ -74,18 +53,6 @@ const userSchema = new Schema(
 		timestamps: true,
 	}
 )
-
-userSchema.virtual('blogs', {
-	ref: 'Blog',
-	localField: '_id',
-	foreignField: 'owner',
-})
-
-// userSchema.virtual("comments", {
-//   ref: "Tweet",
-//   localField: "_id",
-//   foreignField: "owner"
-// });
 
 userSchema.methods.toJSON = function () {
 	const user = this
@@ -160,7 +127,6 @@ userSchema.pre('save', async function (next) {
 
 userSchema.pre('remove', async function (next) {
 	const user = this
-	await Blog.deleteMany({ owner: user._id })
 	next()
 })
 
