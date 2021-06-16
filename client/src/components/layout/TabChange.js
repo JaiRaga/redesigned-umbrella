@@ -7,6 +7,7 @@ import Tab from '@material-ui/core/Tab'
 import Box from '@material-ui/core/Box'
 import Navbar from '../layout/Navbar'
 import Chat from '../chat/Chat'
+import Rooms from '../rooms/Rooms'
 
 function TabPanel(props) {
 	const { children, value, index, ...other } = props
@@ -85,10 +86,10 @@ export default function NavTabs() {
 				<Chat />
 			</TabPanel>
 			<TabPanel value={value} index={1}>
-				<Navbar />
+				<Rooms />
 			</TabPanel>
 			<TabPanel value={value} index={2}>
-				Page Three
+				<Navbar />
 			</TabPanel>
 			<TabPanel value={value} index={3}>
 				<Navbar />
