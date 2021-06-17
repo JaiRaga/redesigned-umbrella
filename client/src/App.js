@@ -1,25 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect } from 'react'
+import { Provider } from 'react-redux'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+
+import store from './redux/store'
+import Login from './components/auth/Login'
+import Register from './components/auth/Register'
+import Dashboard from './components/dashboard/Dashboard'
+import Join from './components/join/Join'
+import Chat from './components/chat/Chat'
+import Messages from './components/messages/Messages'
+
+import PrivateRoute from './components/routing/PrivateRoute'
+
+import './App.css'
+import io from 'socket.io-client'
+
+// redux action
+import { loadUser } from './redux/actions/auth'
+
+let socket
+const URL_SERVER = 'http://localhost:9008'
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	useEffect(() => {
+		socket = io(URL_SERVER)
+		socket.on('connection', () => {
+			console.log(socket.id)
+		})
+	}, [])
+
+	useEffect(() => {
+		store.dispatch(loadUser())
+	}, [])
+	return (
+		<Provider store={store}>
+			<Router>
+				<Switch>
+					<Route exact path='/' component={Login} />
+					<Route exact path='/login' component={Login} />
+					<Route exact path='/register' component={Register} />
+					<PrivateRoute exact path='/dashboard' component={Dashboard} />
+					<PrivateRoute exact path='/join' component={Join} />
+					<PrivateRoute exact path='/chat' component={Chat} />
+					<PrivateRoute exact path='/chat/:id' component={Messages} />
+				</Switch>
+			</Router>
+		</Provider>
+	)
 }
 
-export default App;
+export default App
