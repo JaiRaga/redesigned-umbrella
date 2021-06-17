@@ -1,7 +1,7 @@
 import React from 'react'
 import { Avatar, Grid, makeStyles } from '@material-ui/core'
 import LensIcon from '@material-ui/icons/Lens'
-import Badge from './Badge'
+import MessageBadge from '../Badges/MessageBadge'
 import { useHistory } from 'react-router'
 
 const useStyles = makeStyles((theme) => ({
@@ -54,7 +54,7 @@ const ChatItem = () => {
 						Name ofthe user
 					</Grid>
 					<Grid item>
-						<Badge />
+						<MessageBadge />
 					</Grid>
 				</Grid>
 			</Grid>
