@@ -6,7 +6,6 @@ import {
 	IconButton,
 	Hidden,
 	Typography,
-	Button,
 } from '@material-ui/core'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import { useHistory } from 'react-router'
