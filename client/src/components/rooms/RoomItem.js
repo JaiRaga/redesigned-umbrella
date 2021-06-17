@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 		marginLeft: 15,
 	},
 	userBadge: {
-		paddingTop: 1,
+		// paddingTop: 1,
 	},
 	right: {
 		marginLeft: 'auto',
