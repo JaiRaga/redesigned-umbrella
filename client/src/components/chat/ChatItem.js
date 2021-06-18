@@ -1,5 +1,5 @@
 import React from 'react'
-import { Avatar, Grid, makeStyles } from '@material-ui/core'
+import { Avatar, Grid, makeStyles, Typography } from '@material-ui/core'
 import LensIcon from '@material-ui/icons/Lens'
 import MessageBadge from '../Badges/MessageBadge'
 import { useHistory } from 'react-router'
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }))
 
-const ChatItem = () => {
+const ChatItem = ({ chat }) => {
 	const classes = useStyles()
 	const history = useHistory()
 	return (
@@ -51,7 +51,7 @@ const ChatItem = () => {
 					direction='column'
 					className={classes.nameBadgeContainer}>
 					<Grid item className={classes.name}>
-						Name ofthe user
+						<Typography variant='body1'>{chat.username}</Typography>
 					</Grid>
 					<Grid item>
 						<MessageBadge />
