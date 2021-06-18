@@ -1,40 +1,29 @@
-import React, { useEffect, useState } from 'react'
-import io from 'socket.io-client'
-import { TextField, Button } from '@material-ui/core'
+import React from 'react'
+import { TextField, Button, Grid } from '@material-ui/core'
 
-const URL_SERVER = 'http://localhost:9008'
-const socket = io(URL_SERVER)
-
-const MessageItem = () => {
-	const [message, setMessage] = useState('')
-
-	useEffect(() => {}, [])
-
-	const sendMessage = (e) => {
-		e.preventDefault()
-
-		if (message) {
-			socket.emit('message', { message }, (status) => {
-				console.log('SOCKET_ID', socket.id)
-				console.log('CALLBACK', status)
-				setMessage('')
-			})
-		}
-	}
-
+const MessageItem = ({ message, setMessage, sendMessage }) => {
 	return (
 		<div>
-			<TextField
-				id='mesage'
-				label=''
-				value={message}
-				onChange={(e) => setMessage(e.target.value)}
-				onKeyPress={(e) => (e.key === 'Enter' ? sendMessage(e) : null)}
-				placeholder='type new message...'
-			/>
-			<Button variant='contained' onClick={sendMessage}>
-				Submit
-			</Button>
+			<Grid container item justify='space-around' alignItems='flex-end'>
+				<Grid item xs={9}>
+					<TextField
+						id='mesage'
+						label=''
+						value={message}
+						onChange={(e) => setMessage(e.target.value)}
+						onKeyPress={(e) => (e.key === 'Enter' ? sendMessage(e) : null)}
+						placeholder='type new message...'
+						fullWidth
+						variant='filled'
+						multiline
+					/>
+				</Grid>
+				<Grid item>
+					<Button variant='contained' onClick={(e) => sendMessage(e)}>
+						Submit
+					</Button>
+				</Grid>
+			</Grid>
 		</div>
 	)
 }
