@@ -37,6 +37,25 @@ const userSchema = new Schema(
 				}
 			},
 		},
+		socketId: {
+			type: String,
+		},
+		rooms: [
+			{
+				roomId: {
+					type: Schema.Types.ObjectId,
+					required: true,
+				},
+			},
+		],
+		friends: [
+			{
+				userId: {
+					type: Schema.Types.ObjectId,
+					required: true,
+				},
+			},
+		],
 		caption: {
 			type: String,
 		},
