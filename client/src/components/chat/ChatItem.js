@@ -1,8 +1,10 @@
 import React from 'react'
 import { Avatar, Grid, makeStyles, Typography } from '@material-ui/core'
+import { useHistory } from 'react-router'
+import { dispatch, useDispatch } from 'react-redux'
 import LensIcon from '@material-ui/icons/Lens'
 import MessageBadge from '../Badges/MessageBadge'
-import { useHistory } from 'react-router'
+import { initiatePrivateChat } from '../../redux/actions/user'
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -35,12 +37,15 @@ const useStyles = makeStyles((theme) => ({
 const ChatItem = ({ chat }) => {
 	const classes = useStyles()
 	const history = useHistory()
+	const dispatch = useDispatch()
+
+	const handleClick = () => {
+		dispatch(initiatePrivateChat(chat))
+		history.push('/chat/id')
+	}
+
 	return (
-		<Grid
-			container
-			item
-			className={classes.root}
-			onClick={() => history.push('/chat/id')}>
+		<Grid container item className={classes.root} onClick={handleClick}>
 			<Grid item className={classes.avatar}>
 				<Avatar alt='' src='' />
 			</Grid>
