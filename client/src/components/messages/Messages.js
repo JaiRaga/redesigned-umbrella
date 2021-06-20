@@ -19,11 +19,14 @@ const Messages = () => {
 	const classes = useStyles()
 	const [message, setMessage] = useState('')
 	const { _id } = useSelector((state) => state.auth.user)
+	const chat = useSelector((state) => state.user.privateChat)
 
-	// Sends user id
-	socket.emit('user_id', { id: _id }, (status) => {
-		console.log('user id status', status)
-	})
+	useEffect(() => {
+		// Sends user id
+		socket.emit('user_id', { id: _id }, (status) => {
+			console.log('user id status:', status)
+		})
+	}, [])
 
 	// Receive messages
 	useEffect(() => {
@@ -37,7 +40,7 @@ const Messages = () => {
 		e.preventDefault()
 
 		if (message) {
-			socket.emit('message_chat', { message, userId: _id }, (status) => {
+			socket.emit('message_chat', { message, userId: chat._id }, (status) => {
 				console.log('SOCKET_ID', socket.id)
 				console.log('CALLBACK', status)
 				setMessage('')
