@@ -17,20 +17,22 @@ import io from 'socket.io-client'
 
 // redux action
 import { loadUser } from './redux/actions/auth'
+import { getAllUsers } from './redux/actions/user'
 
 let socket
 const URL_SERVER = 'http://localhost:9008'
 
 function App() {
 	useEffect(() => {
-		socket = io(URL_SERVER)
-		socket.on('connection', () => {
-			console.log(socket.id)
-		})
+		store.dispatch(loadUser())
+		store.dispatch(getAllUsers())
 	}, [])
 
 	useEffect(() => {
-		store.dispatch(loadUser())
+		// socket = io(URL_SERVER)
+		// socket.on('connection', () => {
+		// 	console.log('Client', socket.id)
+		// })
 	}, [])
 	return (
 		<Provider store={store}>
