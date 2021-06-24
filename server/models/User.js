@@ -54,6 +54,10 @@ const userSchema = new Schema(
 					type: Schema.Types.ObjectId,
 					required: true,
 				},
+				chatId: {
+					type: Schema.Types.ObjectId,
+					required: true,
+				}
 			},
 		],
 		caption: {
