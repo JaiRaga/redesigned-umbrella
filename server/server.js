@@ -7,6 +7,7 @@ const socketio = require('socket.io')
 const auth = require('./middleware/auth')
 const userRouter = require('./routes/api/users')
 const User = require('./models/User')
+const Chat = require('./models/Chat')
 
 const app = express()
 const server = http.createServer(app)
@@ -19,23 +20,15 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-// let currentUserId = ''
-// app.use('/api/user/me', auth, (req, res, next) => {
-// 	console.log('Middleware')
-// 	currentUserId = req.user._id.toString()
-// 	console.log(currentUserId)
-// 	next()
-// })
-
 // Routes
 app.use('/api', userRouter)
 
+let user_id = ''
 io.on('connection', (socket) => {
 	console.log('New WebSocket connection')
 	console.log('SERVER', socket.id)
 
 	// Saves socket id for the connection duration
-	let user_id = ''
 	socket.on('user_id', async ({ id }, callback) => {
 		console.log('USER_ID', id)
 		user_id = id
@@ -51,21 +44,52 @@ io.on('connection', (socket) => {
 	})
 
 	// receives message and redirects it to a user
-	socket.on('message_chat', async ({ message, userId }, callback) => {
-		try {
-			const user = await User.findById({ _id: userId })
-			if (!user) {
+	socket.on(
+		'message_chat',
+		async ({ message, userId, authUserId }, callback) => {
+			try {
+				const user = await User.findById({ _id: userId })
+
+				// const chat = await Chat.find({ $and: [{"users.userId": userId}, {"users.userId": authUserId}] })
+
+				let chat = await Chat.find({$and: [{'users.userId': userId, "users.authUserId": authUserId}]})
+				chat = chat[0]
+
+				// const chat = await Chat.find({users: {$elemMatch: {userId, authUserId}}})
+
+				console.log("chat message", chat)
+
+				if (!chat || Object.keys(chat).length === 0) {
+					console.log('*******************Nope', chat)
+					const newChat = new Chat({
+						users: {userId, authUserId},
+						messages: [{authUserId, text: message}]
+					}) 
+					await newChat.save()
+					console.log('*******************YUP', newChat)
+				} else {
+					console.log('***********************1', chat)
+					chat.messages.push({authUserId, text: message})
+					await chat.save()
+					console.log('***********************2', chat)
+				}
+
+				if (!user) {
+					callback('Not Delivered!')
+				} else {
+					io.to(user.socketId).emit('message_chat', {
+						message,
+						userId: user._id,
+					})
+					// Sends delivery status back to client
+					callback('Delivered!')
+				}
+			} catch (err) {
 				callback('Not Delivered!')
-			} else {
-				io.to(user.socketId).emit('message_chat', { message, userId: user._id })
-				// Sends delivery status back to client
-				callback('Delivered!')
+				console.log(err)
 			}
-		} catch (err) {
-			callback('Not Delivered!')
-			console.log(err)
 		}
-	})
+	)
 
 	// actions to do when the user disconnects
 	socket.on('disconnect', async () => {
