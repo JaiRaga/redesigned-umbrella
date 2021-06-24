@@ -40,11 +40,15 @@ const Messages = () => {
 		e.preventDefault()
 
 		if (message) {
-			socket.emit('message_chat', { message, userId: chat._id }, (status) => {
-				console.log('SOCKET_ID', socket.id)
-				console.log('CALLBACK', status)
-				setMessage('')
-			})
+			socket.emit(
+				'message_chat',
+				{ message, userId: chat._id, authUserId: _id },
+				(status) => {
+					console.log('SOCKET_ID', socket.id)
+					console.log('CALLBACK', status)
+					setMessage('')
+				}
+			)
 		}
 	}
 
