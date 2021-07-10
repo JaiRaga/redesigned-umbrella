@@ -1,12 +1,19 @@
 import React, { useEffect } from 'react'
-import { Grid } from '@material-ui/core'
+import { Grid, CircularProgress, makeStyles } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux'
 import TabChange from '../layout/TabChange'
 import { socket } from '../messages/Messages'
 import { addChats } from '../../redux/actions/chat'
 
+const useStyles = makeStyles((theme) => ({
+	loading: {
+		marginTop: 20,
+	},
+}))
+
 const Dashboard = () => {
 	const dispatch = useDispatch()
+	const classes = useStyles()
 	const user = useSelector((state) => state.auth.user)
 	let _id
 
@@ -22,9 +29,15 @@ const Dashboard = () => {
 
 	return (
 		<Grid container justify='center' alignItems='center'>
-			<Grid container item xs={12} md={9} lg={6}>
-				<TabChange />
-			</Grid>
+			{!user ? (
+				<div className={classes.loading}>
+					<CircularProgress />
+				</div>
+			) : (
+				<Grid container item xs={12} md={9} lg={6}>
+					<TabChange />
+				</Grid>
+			)}
 		</Grid>
 	)
 }
